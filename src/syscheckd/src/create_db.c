@@ -68,9 +68,12 @@ cJSON * fim_calculate_dbsync_difference(const fim_file_data *data,
 
     if (data->options & CHECK_PERM) {
         if (aux = cJSON_GetObjectItem(changed_data, "perm"), aux != NULL) {
+#ifndef WIN32
             cJSON_AddStringToObject(old_attributes, "perm", cJSON_GetStringValue(aux));
+#else
+            cJSON_AddItemToObject(old_attributes, "perm", cJSON_Duplicate(aux, 1));
+#endif
             cJSON_AddItemToArray(changed_attributes, cJSON_CreateString("permission"));
-
         } else {
 #ifndef WIN32
             cJSON_AddStringToObject(old_attributes, "perm", data->perm);
