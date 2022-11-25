@@ -263,7 +263,55 @@ std::optional<int> Json::getInt(std::string_view path) const
     }
 }
 
-std::optional<double> Json::getDouble(std::string_view path) const
+std::optional<int64_t> Json::getInt64(std::string_view path) const
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        const auto* value = pp.Get(m_document);
+        if (value && value->IsInt64())
+        {
+            return value->GetInt64();
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::get(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
+std::optional<float_t> Json::getFloat(std::string_view path) const
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        const auto* value = pp.Get(m_document);
+        if (value && value->IsFloat())
+        {
+            return value->GetFloat();
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::get(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
+std::optional<double_t> Json::getDouble(std::string_view path) const
 {
     auto pp = rapidjson::Pointer(path.data());
 
@@ -600,6 +648,58 @@ bool Json::isInt(std::string_view path) const
     }
 }
 
+bool Json::isInt64(std::string_view path) const
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        const auto* value = pp.Get(m_document);
+        if (value)
+        {
+            return value->IsInt64();
+        }
+        else
+        {
+            throw std::runtime_error(fmt::format("[Json::isInt(basePointerPath)] "
+                                                 "Cannot find path: [{}]",
+                                                 path));
+        }
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::isInt(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
+bool Json::isFloat(std::string_view path) const
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        const auto* value = pp.Get(m_document);
+        if (value)
+        {
+            return value->IsFloat();
+        }
+        else
+        {
+            throw std::runtime_error(fmt::format("[Json::isInt(basePointerPath)] "
+                                                 "Cannot find path: [{}]",
+                                                 path));
+        }
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::isInt(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
 bool Json::isDouble(std::string_view path) const
 {
     auto pp = rapidjson::Pointer(path.data());
@@ -814,7 +914,39 @@ void Json::setInt(int value, std::string_view path)
     }
 }
 
-void Json::setDouble(double value, std::string_view path)
+void Json::setInt64(int64_t value, std::string_view path)
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        pp.Set(m_document, value);
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::setInt(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
+void Json::setFloat(float_t value, std::string_view path)
+{
+    auto pp = rapidjson::Pointer(path.data());
+
+    if (pp.IsValid())
+    {
+        pp.Set(m_document, value);
+    }
+    else
+    {
+        throw std::runtime_error(fmt::format("[Json::setDouble(basePointerPath)] "
+                                             "Invalid json path: [{}]",
+                                             path));
+    }
+}
+
+void Json::setDouble(double_t value, std::string_view path)
 {
     auto pp = rapidjson::Pointer(path.data());
 
